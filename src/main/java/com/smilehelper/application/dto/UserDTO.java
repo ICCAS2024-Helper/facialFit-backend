@@ -11,14 +11,17 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+
+/**
+ * UserDB 정보.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class UserDTO {
-
-    private Long id;
-    private String username;
+    private Long userId;
+    private String id;
     private String nickname;
     private UserRole role;
     private long coin;
@@ -31,8 +34,8 @@ public class UserDTO {
 
     public static UserDTO build(User user) {
         return UserDTO.builder()
+                .userId(user.getUserId())
                 .id(user.getId())
-                .username(user.getUsername())
                 .nickname(user.getNickname())
                 .role(user.getRole())
                 .coin(user.getCoin())
