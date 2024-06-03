@@ -29,13 +29,13 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long userId; // 사용자 식별자
 
     @Column(unique = true, nullable = false)
     @NotEmpty
     @Size(min = 4, max = 25)
     @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "유저이름은 영문 대소문자와 숫자만 사용할 수 있습니다.")
-    private String username; // 로그인에 사용되는 아이디
+    private String id; // 로그인에 사용되는 아이디
 
     @Column(nullable = false)
     @NotEmpty
@@ -98,5 +98,10 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return !isDeleted;
+    }
+
+    @Override
+    public String getUsername() {
+        return id; // getUsername 메서드 추가
     }
 }
