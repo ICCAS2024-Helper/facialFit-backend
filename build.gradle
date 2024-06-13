@@ -40,3 +40,7 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+tasks.named('jar') {
+	archiveFileName.set('application-0.0.1-SNAPSHOT.jar')
+}

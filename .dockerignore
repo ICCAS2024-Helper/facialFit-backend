@@ -3,6 +3,7 @@
 
 # Except build output directory
 !build/libs/
+!build/libs/application-0.0.1-SNAPSHOT.jar
 
 # Optionally, include other necessary files
 !src/**
