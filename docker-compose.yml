@@ -1,0 +1,27 @@
+version: '3.8'
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: facialFitDb
+      MYSQL_ROOT_PASSWORD: jiny0609
+    ports:
+      - "3308:3306"
+    volumes:
+      - my-db:/var/lib/mysql
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      DB_URL: jdbc:mysql://db:3306/facialFitDb
+      DB_USERNAME: root
+      DB_PASSWORD: jiny0609
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+volumes:
+  my-db:
