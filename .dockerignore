@@ -1,0 +1,11 @@
+# Ignore everything
+*
+
+# Except build output directory
+!build/libs/
+
+# Optionally, include other necessary files
+!src/**
+!gradle/**
+!build.gradle
+!settings.gradle
