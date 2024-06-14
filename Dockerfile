@@ -14,5 +14,5 @@ WORKDIR /app
 COPY build/libs/application-0.0.1-SNAPSHOT.jar ./app.jar
 
 # 애플리케이션 실행 명령어
-ENTRYPOINT ["java", "-jar", "./app.jar"]
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
 
