@@ -1,11 +1,7 @@
 FROM ubuntu:latest
 LABEL authors="jiny"
 
-# Java 설치
-RUN apt-get update && \
-    apt-get install -y openjdk-11-jdk && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+FROM eclipse-temurin:21-jdk
 
 # 작업 디렉토리 설정
 WORKDIR /app
