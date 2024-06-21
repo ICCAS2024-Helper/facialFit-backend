@@ -11,8 +11,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * LoginController 클래스는 로그인 관련 HTTP 요청을 처리합니다.
@@ -35,9 +39,9 @@ public class LoginController {
 
     /**
      * 사용자 로그인 처리
-     * @param request HTTP 요청
-     * @param response HTTP 응답
-     * @param loginDTO 로그인 정보 DTO
+     * @param loginDTO 로그인 정보
+     * @return JWT
+     * @throws ResponseStatusException 로그인 실패 시 예외 발생
      */
     @Operation(summary = "로그인", description = "사용자 로그인을 처리합니다.")
     @ApiResponses(value = {
@@ -47,19 +51,17 @@ public class LoginController {
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     @PostMapping("/login")
-    @ResponseStatus(code = HttpStatus.OK)
-    public void login(final HttpServletRequest request, final HttpServletResponse response,
-                      @RequestBody LoginDTO loginDTO) {
+    public ResponseEntity<Map<String, String>> login(@RequestBody LoginDTO loginDTO) {
         try {
             String token = loginService.tryLogin(loginDTO);
-            Cookie tokenCookie = createTokenCookie(token, 168 * 60 * 60);
-            response.addCookie(tokenCookie);
+            Map<String, String> response = new HashMap<>();
+            response.put("token", token);
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
-            Cookie emptyCookie = createTokenCookie(null, 0);
-            response.addCookie(emptyCookie);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
+
 
     /**
      * 사용자 로그아웃 처리
