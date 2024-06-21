@@ -1,6 +1,8 @@
 package com.smilehelper.application.service;
 
 import com.smilehelper.application.domain.User;
+import com.smilehelper.application.dto.UserDTO;
+import com.smilehelper.application.exception.UserException;
 import com.smilehelper.application.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -51,7 +53,7 @@ public class UserService {
             user.setUpdatedAt(LocalDateTime.now()); // 업데이트 시간 설정
             userRepository.save(user); // 사용자 저장
         } else {
-            throw new Exception("유저가 존재하지 않습니다.");
+            throw new UserException("유저가 존재하지 않습니다.");
         }
     }
 
@@ -70,17 +72,18 @@ public class UserService {
             user.setUpdatedAt(LocalDateTime.now()); // 업데이트 시간 설정
             userRepository.save(user); // 사용자 저장
         } else {
-            throw new Exception("유저가 존재하지 않습니다.");
+            throw new UserException("유저가 존재하지 않습니다.");
         }
     }
 
     /**
      * 사용자 정보 읽기
-     * @param id 사용자 ID
+     * @param userId 사용자 ID
      * @return 사용자 정보 Optional 객체
      */
-    public Optional<User> read(Long id) {
-        return userRepository.findById(id);
+    public Optional<UserDTO> readUser(Long userId) {
+        Optional<User> user = userRepository.findById(userId);
+        return user.map(UserDTO::build);
     }
 
 }

@@ -3,6 +3,7 @@ package com.smilehelper.application.service;
 import com.smilehelper.application.domain.User;
 import com.smilehelper.application.dto.JoinDTO;
 import com.smilehelper.application.enums.UserRole;
+import com.smilehelper.application.exception.UserException;
 import com.smilehelper.application.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -38,29 +39,30 @@ public class JoinService {
     /**
      * 새로운 사용자 생성
      * @param joinDTO 새로운 사용자 정보
-     * @throws Exception 사용자 이름 중복 또는 비밀번호 규칙 불일치 시 예외 발생
+     * @throws UserException 사용자 이름 중복 시 예외 발생
      */
     @Transactional
-    public void create(JoinDTO joinDTO) throws Exception {
-        if (!userRepository.existsById(joinDTO.getId()) && !joinDTO.getId().equals("익명의 사용자")
-                && Pattern.matches(PASSWORD_RULE, joinDTO.getPassword())) {
-            User user = User.builder()
-                    .id(joinDTO.getId())
-                    .nickname(joinDTO.getNickname())
-                    .password(passwordEncoder.encode(joinDTO.getPassword()))
-                    .role(UserRole.ROLE_USER)
-                    .coin(0) // 코인 기본값 0으로 설정
-                    .healthArea(joinDTO.getHealthArea())
-                    .severityLevel(joinDTO.getSeverityLevel())
-                    .age(joinDTO.getAge())
-                    .createdAt(LocalDateTime.now())
-                    .updatedAt(LocalDateTime.now())
-                    .isDeleted(false)
-                    .build();
-            userRepository.save(user);
-        } else {
-            throw new Exception("유저의 이름이 중복되었거나 비밀번호 규칙이 일치하지 않습니다.");
+    public void create(JoinDTO joinDTO) throws UserException {
+        if (userRepository.existsById(joinDTO.getId()) || joinDTO.getId().equals("익명의 사용자")) {
+            throw new UserException("유저의 이름이 중복되었습니다.");
         }
+        if (!Pattern.matches(PASSWORD_RULE, joinDTO.getPassword())) {
+            throw new UserException("비밀번호 규칙이 일치하지 않습니다.");
+        }
+        User user = User.builder()
+                .id(joinDTO.getId())
+                .nickname(joinDTO.getNickname())
+                .password(passwordEncoder.encode(joinDTO.getPassword()))
+                .role(UserRole.ROLE_USER)
+                .coin(0) // 코인 기본값 0으로 설정
+                .healthArea(joinDTO.getHealthArea())
+                .severityLevel(joinDTO.getSeverityLevel())
+                .age(joinDTO.getAge())
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .isDeleted(false)
+                .build();
+        userRepository.save(user);
     }
 
     /**

@@ -34,7 +34,7 @@ public class User implements UserDetails {
     @Column(unique = true, nullable = false)
     @NotEmpty
     @Size(min = 4, max = 25)
-    @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "유저이름은 영문 대소문자와 숫자만 사용할 수 있습니다.")
+    @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "아이디는 영문 대소문자와 숫자만 사용할 수 있습니다.")
     private String id; // 로그인에 사용되는 아이디
 
     @Column(nullable = false)
@@ -44,7 +44,7 @@ public class User implements UserDetails {
 
     @Column(nullable = false)
     @NotEmpty
-    @Size(min = 4, max = 100)
+    @Size(min = 8, max = 100)
     private String password; // 비밀번호 (암호화되어 저장)
 
     @Column(nullable = false)
@@ -74,6 +74,20 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private boolean isDeleted; // 탈퇴여부
 
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
+
+    @OneToMany(mappedBy = "user")
+    private List<UserQuest> userQuests; // 사용자의 퀘스트 목록
+
     // UserDetails 인터페이스 구현 메서드
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -102,6 +116,6 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return id; // getUsername 메서드 추가
+        return id; // getId 메서드 추가
     }
 }
