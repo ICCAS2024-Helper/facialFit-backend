@@ -12,7 +12,6 @@ import java.util.Date;
 /**
  * JwtTokenProvider 클래스는 JWT 토큰을 생성하고 유효성을 검사합니다.
  */
-
 public class JwtTokenProvider {
 
     // 안전한 키 생성

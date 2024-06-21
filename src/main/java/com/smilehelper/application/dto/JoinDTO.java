@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * 사용자가 회원가입 시 입력해야할 정보.
+ * 패스워드 유효성 검증은 서비스 레벨에서 처리
  */
 @Data
 @AllArgsConstructor

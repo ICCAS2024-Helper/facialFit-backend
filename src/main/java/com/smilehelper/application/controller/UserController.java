@@ -2,7 +2,6 @@ package com.smilehelper.application.controller;
 
 import com.smilehelper.application.domain.User;
 import com.smilehelper.application.dto.UserDTO;
-import com.smilehelper.application.enums.UserRole;
 import com.smilehelper.application.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

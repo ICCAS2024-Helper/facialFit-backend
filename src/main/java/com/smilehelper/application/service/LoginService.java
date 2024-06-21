@@ -2,6 +2,7 @@ package com.smilehelper.application.service;
 
 import com.smilehelper.application.domain.User;
 import com.smilehelper.application.dto.LoginDTO;
+import com.smilehelper.application.exception.UserException;
 import com.smilehelper.application.repository.UserRepository;
 import com.smilehelper.application.security.JwtTokenProvider;
 import com.smilehelper.application.security.UserAuthentication;
@@ -51,7 +52,7 @@ public class LoginService implements UserDetailsService {
             );
             return JwtTokenProvider.generateToken(authentication); // JWT 토큰 생성
         } else {
-            throw new IllegalArgumentException("패스워드가 일치하지 않습니다.");
+            throw new UserException("패스워드가 일치하지 않습니다.");
         }
     }
 
