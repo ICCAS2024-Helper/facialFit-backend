@@ -2,7 +2,6 @@ package com.smilehelper.application.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import com.smilehelper.application.domain.User;
@@ -35,34 +34,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         try {
-            String token = getJwtFromCookie(request);
+            String token = getJwtFromRequest(request);
             if (JwtTokenProvider.validateToken(token)) {
                 String id = JwtTokenProvider.getUsernameFromJwt(token);
 
-                try {
-                    User user = userRepository.findById(id)
-                            .orElseThrow(() -> new UsernameNotFoundException("유저가 존재하지 않습니다."));
+                User user = userRepository.findById(id)
+                        .orElseThrow(() -> new UsernameNotFoundException("유저가 존재하지 않습니다."));
 
-                    UserAuthentication authentication = new UserAuthentication(user, null, user.getAuthorities());
-                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                UserAuthentication authentication = new UserAuthentication(user, null, user.getAuthorities());
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                } catch (Exception e) {
-                    request.setAttribute("unauthorization", "401 Error while authentication");
-                }
-            } else {
-                request.setAttribute("unauthorization", "401 No key or Key expiration");
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
-        } catch (Exception ignored) { }
+        } catch (Exception e) {
+            request.setAttribute("unauthorization", "401 Error while authentication");
+        }
         filterChain.doFilter(request, response);
     }
 
-    private String getJwtFromCookie(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        for(Cookie cookie : cookies) {
-            if(cookie.getName().equals("token")) {
-                return cookie.getValue();
-            }
+    private String getJwtFromRequest(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
         }
         return null;
     }
