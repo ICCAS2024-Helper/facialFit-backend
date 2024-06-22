@@ -19,7 +19,7 @@ public class Purchase {
 
     @Id
     @GeneratedValue(strategy  = GenerationType.IDENTITY)
-    private Long Purchase_id; //구매 내역 식별자
+    private Long PurchaseId; //구매 내역 식별자
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
