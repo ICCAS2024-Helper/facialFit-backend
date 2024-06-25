@@ -1,47 +1,27 @@
-spring:
-  datasource:
-    url: ${DB_URL:jdbc:mysql://localhost:3308/facialFitDb}
-    username: ${DB_USERNAME:root}
-    password: ${DB_PASSWORD:jiny0609}
-    driver-class-name: com.mysql.cj.jdbc.Driver
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-        dialect: org.hibernate.dialect.MySQLDialect
-management:
-  endpoints:
-    web:
-      exposure:
-        include:
-          - health
-          - info
-          - metrics
-          - prometheus
-  endpoint:
-    health:
-      show-details: always
+version: '3.8'
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: facialFitDb
+      MYSQL_ROOT_PASSWORD: jiny0609
+    ports:
+      - "3308:3306"
+    volumes:
+      - my-db:/var/lib/mysql
 
-# SpringDoc and Swagger UI Configuration
-springdoc:
-  swagger-ui:
-    disable-swagger-default-url: true
-    display-request-duration: true
-    groups-order: DESC
-    tags-sorter: alpha
-    operations-sorter: method
-  api-docs:
-    path: /v3/api-docs
-  show-actuator: true
-  default-consumes-media-type: application/json;charset=UTF-8
-  default-produces-media-type: application/json;charset=UTF-8
-  writer-with-default-pretty-printer: true
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      DB_URL: jdbc:mysql://db:3306/facialFitDb
+      DB_USERNAME: root
+      DB_PASSWORD: jiny0609
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
 
-logging:
-  level:
-    org.springframework.security: DEBUG
-    org.springframework.web: DEBUG
-
+volumes:
+  my-db:
