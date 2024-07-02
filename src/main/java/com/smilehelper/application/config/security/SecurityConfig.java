@@ -31,10 +31,10 @@ public class SecurityConfig {
     );
 
     private static final List<String> PUBLIC_URLS = Arrays.asList(
-            "/api/join/**",  // Join API 엔드포인트를 허용합니다.
-            "/api/login/**",  // Login API 엔드포인트를 허용합니다.
-            "/api/logout/**",// Login API 엔드포인트를 허용합니다.
-            "/api/user/**" // User API 엔드포인트를 허용합니다.
+            "/api/join/**",
+            "/api/login/**",
+            "/api/logout/**",
+            "/api/user/**"
     );
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -46,14 +46,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Customizing CORS
-                .csrf(csrf -> csrf.disable()) // Disable CSRF protection
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(SWAGGER_URLS.toArray(new String[0])).permitAll()
-                        .requestMatchers(PUBLIC_URLS.toArray(new String[0])).permitAll() // Public API 엔드포인트를 허용합니다.
+                        .requestMatchers(PUBLIC_URLS.toArray(new String[0])).permitAll()
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // JWT 필터 추가
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -61,7 +61,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOriginPattern("*"); // Adjust according to your CORS policy
+        configuration.addAllowedOriginPattern("*");
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
         configuration.setAllowCredentials(true);
@@ -71,7 +71,6 @@ public class SecurityConfig {
         return source;
     }
 
-    // PasswordEncoder 빈 정의
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

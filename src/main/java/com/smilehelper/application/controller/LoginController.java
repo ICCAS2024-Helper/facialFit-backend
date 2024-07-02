@@ -1,6 +1,7 @@
 package com.smilehelper.application.controller;
 
 import com.smilehelper.application.dto.LoginDTO;
+import com.smilehelper.application.security.JwtTokenProvider;
 import com.smilehelper.application.service.LoginService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -12,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -53,15 +55,41 @@ public class LoginController {
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(@RequestBody LoginDTO loginDTO) {
         try {
-            String token = loginService.tryLogin(loginDTO);
-            Map<String, String> response = new HashMap<>();
-            response.put("token", token);
-            return ResponseEntity.ok(response);
+            Map<String, String> tokens = loginService.tryLogin(loginDTO);
+            return ResponseEntity.ok(tokens);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
+    /**
+     * JWT 토큰 갱신
+     * @param request 갱신 요청 정보
+     * @return 새로운 Access Token
+     */
+    @Operation(summary = "토큰 갱신", description = "리프레시 토큰을 사용하여 새로운 액세스 토큰을 발급받습니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "토큰 갱신 성공"),
+            @ApiResponse(responseCode = "401", description = "인증 실패")
+    })
+    @PostMapping("/refresh")
+    public ResponseEntity<Map<String, String>> refresh(@RequestBody Map<String, String> request) {
+        String refreshToken = request.get("refreshToken");
+
+        if (refreshToken == null || !JwtTokenProvider.validateToken(refreshToken)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+
+        String username = JwtTokenProvider.getUsernameFromJwt(refreshToken);
+        UserDetails userDetails = loginService.loadUserByUsername(username);
+
+        String newAccessToken = JwtTokenProvider.generateAccessToken(userDetails);
+
+        Map<String, String> tokens = new HashMap<>();
+        tokens.put("accessToken", newAccessToken);
+
+        return ResponseEntity.ok(tokens);
+    }
 
     /**
      * 사용자 로그아웃 처리

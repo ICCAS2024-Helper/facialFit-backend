@@ -14,6 +14,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * JwtAuthenticationFilter 클래스는 JWT 토큰을 검증하고 사용자를 인증합니다.
@@ -21,6 +23,8 @@ import java.io.IOException;
  */
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+    private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
     private final UserRepository userRepository;
 
@@ -35,19 +39,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         try {
             String token = getJwtFromRequest(request);
-            if (JwtTokenProvider.validateToken(token)) {
-                String id = JwtTokenProvider.getUsernameFromJwt(token);
+            if (token == null) {
+                logger.debug("JWT token is missing");
+            } else {
+                if (JwtTokenProvider.validateToken(token)) {
+                    String id = JwtTokenProvider.getUsernameFromJwt(token);
 
-                User user = userRepository.findById(id)
-                        .orElseThrow(() -> new UsernameNotFoundException("유저가 존재하지 않습니다."));
+                    User user = userRepository.findById(id)
+                            .orElseThrow(() -> new UsernameNotFoundException("User not found with id: " + id));
 
-                UserAuthentication authentication = new UserAuthentication(user, null, user.getAuthorities());
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    UserAuthentication authentication = new UserAuthentication(user, null, user.getAuthorities());
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                } else {
+                    logger.debug("Invalid JWT token");
+                }
             }
         } catch (Exception e) {
-            request.setAttribute("unauthorization", "401 Error while authentication");
+            logger.error("Error occurred during JWT authentication", e);
+            request.setAttribute("unauthorization", "401 Error while authentication: " + e.getMessage());
         }
         filterChain.doFilter(request, response);
     }

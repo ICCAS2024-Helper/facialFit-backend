@@ -40,3 +40,9 @@ out/
 ### Application Configuration ###
 # Ignore configuration files that contain sensitive information
 application.yml
+
+# Local environment configuration
+src/main/resources/application-local.yml
+
+# Kubernetes environment configuration
+src/main/resources/application-k8s.yml
