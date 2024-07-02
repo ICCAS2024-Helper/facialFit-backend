@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: facialfit-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: facialfit-app
+  template:
+    metadata:
+      labels:
+        app: facialfit-app
+    spec:
+      containers:
+        - name: facialfit-app
+          image: gcr.io/studious-pen-428117-n9/facialfit-app:latest
+          ports:
+            - containerPort: 8080  # 컨테이너 내부 포트는 그대로 유지
+          env:
+            - name: DB_URL
+              value: "jdbc:mysql://mysql-service:3306/facialFitDb"
+            - name: DB_USERNAME
+              value: "root"
+            - name: DB_PASSWORD
+              value: "jiny0609"
+            - name: SPRING_PROFILES_ACTIVE
+              value: "k8s"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: facialfit-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: facialfit-app
+  ports:
+    - protocol: TCP
+      port: 8082  # 외부 포트를 8082로 설정
+      targetPort: 8080  # 내부 포트는 8080으로 매핑

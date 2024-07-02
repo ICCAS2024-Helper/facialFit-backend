@@ -17,8 +17,11 @@ public class JwtTokenProvider {
     // 안전한 키 생성
     private static final Key JWT_SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS512);
 
-    // Token Expiration Time (8 days)
-    private static final int JWT_EXPIRATION_MS = 8 * 24 * 60 * 60 * 1000;
+    // Access Token Expiration Time (30 minutes)
+    private static final int ACCESS_TOKEN_EXPIRATION_MS = 30 * 60 * 1000;
+
+    // Refresh Token Expiration Time (7 days)
+    private static final int REFRESH_TOKEN_EXPIRATION_MS = 7 * 24 * 60 * 60 * 1000;
 
     private final static JwtParser jwtParser;
 
@@ -29,16 +32,33 @@ public class JwtTokenProvider {
     }
 
     /**
-     * JWT 토큰 생성
-     * @param authentication 인증 객체
-     * @return 생성된 JWT 토큰
+     * Access Token 생성
+     * @param userDetails 사용자 정보 객체
+     * @return 생성된 Access Token
      */
-    public static String generateToken(Authentication authentication) {
+    public static String generateAccessToken(UserDetails userDetails) {
         Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + JWT_EXPIRATION_MS);
+        Date expiryDate = new Date(now.getTime() + ACCESS_TOKEN_EXPIRATION_MS);
 
         return Jwts.builder()
-                .setSubject(((UserDetails)authentication.getPrincipal()).getUsername())
+                .setSubject(userDetails.getUsername())
+                .setIssuedAt(now)
+                .setExpiration(expiryDate)
+                .signWith(JWT_SECRET_KEY, SignatureAlgorithm.HS512)
+                .compact();
+    }
+
+    /**
+     * Refresh Token 생성
+     * @param userDetails 사용자 정보 객체
+     * @return 생성된 Refresh Token
+     */
+    public static String generateRefreshToken(UserDetails userDetails) {
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + REFRESH_TOKEN_EXPIRATION_MS);
+
+        return Jwts.builder()
+                .setSubject(userDetails.getUsername())
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(JWT_SECRET_KEY, SignatureAlgorithm.HS512)

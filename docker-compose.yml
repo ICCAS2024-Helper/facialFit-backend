@@ -18,8 +18,9 @@ services:
       DB_URL: jdbc:mysql://db:3306/facialFitDb
       DB_USERNAME: root
       DB_PASSWORD: jiny0609
+      SPRING_PROFILES_ACTIVE: local
     ports:
-      - "8080:8080"
+      - "8082:8080"  # 외부 포트 8082를 내부 포트 8080에 매핑
     depends_on:
       - db
 
