@@ -1,6 +1,9 @@
 package com.smilehelper.application.config.security;
 
 import com.smilehelper.application.security.JwtAuthenticationFilter;
+import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
+import org.springframework.boot.actuate.health.HealthEndpoint;
+import org.springframework.boot.actuate.info.InfoEndpoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -34,7 +37,8 @@ public class SecurityConfig {
             "/api/join/**",
             "/api/login/**",
             "/api/logout/**",
-            "/api/user/**"
+            "/api/user/**",
+            "/actuator/**"
     );
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -51,6 +55,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(SWAGGER_URLS.toArray(new String[0])).permitAll()
                         .requestMatchers(PUBLIC_URLS.toArray(new String[0])).permitAll()
+                        .requestMatchers(EndpointRequest.to(HealthEndpoint.class, InfoEndpoint.class)).permitAll() // actuator 엔드포인트 접근 허용
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
