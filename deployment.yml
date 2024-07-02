@@ -26,6 +26,8 @@ spec:
               value: "jiny0609"
             - name: SPRING_PROFILES_ACTIVE
               value: "k8s"
+      imagePullSecrets:
+        - name: gcr-json-key
 ---
 apiVersion: v1
 kind: Service
