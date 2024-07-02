@@ -38,7 +38,8 @@ public class SecurityConfig {
             "/api/login/**",
             "/api/logout/**",
             "/api/user/**",
-            "/actuator/**"
+            "/actuator/**",
+            "/error" // /error 경로 추가
     );
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
