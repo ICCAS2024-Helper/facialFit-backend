@@ -8,10 +8,14 @@ import com.smilehelper.application.security.JwtTokenProvider;
 import com.smilehelper.application.security.UserAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * LoginService 클래스는 사용자 로그인 관련 비즈니스 로직을 처리하는 서비스 클래스.
@@ -39,7 +43,7 @@ public class LoginService implements UserDetailsService {
      * @return JWT 토큰
      * @throws UsernameNotFoundException 사용자 이름이 없거나 상태가 비활성화된 경우 예외 발생
      */
-    public String tryLogin(LoginDTO loginDTO) throws UsernameNotFoundException {
+    public Map<String, String> tryLogin(LoginDTO loginDTO) throws UsernameNotFoundException {
         User user = userRepository.findById(loginDTO.getId())
                 .orElseThrow(() -> new UsernameNotFoundException("유저가 존재하지 않습니다."));
 
@@ -50,7 +54,15 @@ public class LoginService implements UserDetailsService {
             Authentication authentication = new UserAuthentication(
                     user, loginDTO.getPassword(), user.getAuthorities()
             );
-            return JwtTokenProvider.generateToken(authentication); // JWT 토큰 생성
+
+            // AccessToken과 RefreshToken 생성
+            String accessToken = JwtTokenProvider.generateAccessToken((UserDetails) authentication.getPrincipal());
+            String refreshToken = JwtTokenProvider.generateRefreshToken((UserDetails) authentication.getPrincipal());
+
+            Map<String, String> tokens = new HashMap<>();
+            tokens.put("accessToken", accessToken);
+            tokens.put("refreshToken", refreshToken);
+            return tokens;
         } else {
             throw new UserException("패스워드가 일치하지 않습니다.");
         }
