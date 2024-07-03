@@ -52,8 +52,13 @@ jobs:
       - name: Set up gcloud CLI
         uses: google-github-actions/setup-gcloud@v1
         with:
-          project_id: ${{ secrets.GCP_PROJECT }}
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
           service_account_key: ${{ secrets.GCP_SA_KEY }}
-# 추가된 단계 3
+
+      - name: Configure kubectl
         run: |
-          gcloud container clusters get-credentials [CLUSTER_NAME] --zone [ZONE] --project ${{ secrets.GCP_PROJECT }}
+          gcloud container clusters get-credentials ${{ secrets.GKE_CLUSTER_NAME }} --zone ${{ secrets.GKE_CLUSTER_LOCATION }} --project ${{ secrets.GCP_PROJECT_ID }}
+
+      - name: Deploy to GKE
+        run: |
+          kubectl apply -f deployment.yml
