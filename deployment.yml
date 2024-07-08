@@ -1,29 +1,38 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: facialfit-app
+  name: smilehelper-app
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: facialfit-app
+      app: smilehelper-app
   template:
     metadata:
       labels:
-        app: facialfit-app
+        app: smilehelper-app
     spec:
       containers:
-        - name: facialfit-app
-          image: gcr.io/studious-pen-428117-n9/facialfit-app:latest
+        - name: smilehelper-app
+          image: gcr.io/smile-helper/smilehelper-app:latest
           ports:
-            - containerPort: 8080  # 컨테이너 내부 포트는 그대로 유지
+            - containerPort: 8080
           env:
             - name: DB_URL
-              value: "jdbc:mysql://mysql-service:3306/facialFitDb"
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: DB_URL
             - name: DB_USERNAME
-              value: "root"
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: DB_USERNAME
             - name: DB_PASSWORD
-              value: "jiny0609"
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: DB_PASSWORD
             - name: SPRING_PROFILES_ACTIVE
               value: "k8s"
       imagePullSecrets:
@@ -32,12 +41,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: facialfit-service
+  name: smilehelper-service
 spec:
   type: LoadBalancer
   selector:
-    app: facialfit-app
+    app: smilehelper-app
   ports:
     - protocol: TCP
-      port: 8082  # 외부 포트를 8082로 설정
-      targetPort: 8080  # 내부 포트는 8080으로 매핑
+      port: 8082
+      targetPort: 8080
