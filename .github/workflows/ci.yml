@@ -65,6 +65,14 @@ jobs:
         run: |
           gcloud container clusters get-credentials ${{ secrets.GKE_CLUSTER_NAME }} --zone ${{ secrets.GKE_CLUSTER_LOCATION }} --project ${{ secrets.GCP_PROJECT_ID }}
 
+      - name: Create or update Kubernetes secrets
+        run: |
+          kubectl create secret generic db-secret \
+            --from-literal=DB_URL=${{ secrets.DB_URL }} \
+            --from-literal=DB_USERNAME=${{ secrets.DB_USERNAME }} \
+            --from-literal=DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+            --dry-run=client -o yaml | kubectl apply -f -
+
       - name: Deploy to GKE
         run: |
           kubectl apply -f deployment.yml

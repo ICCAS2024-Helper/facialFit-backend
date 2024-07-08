@@ -26,7 +26,7 @@ public class SecurityConfig {
     private static final List<String> SWAGGER_URLS = Arrays.asList(
             "/",
             "/swagger-ui/**",
-            "/swagger-ui/index.html",
+            "/swagger-ui.html",
             "/v1/api-docs/**",
             "/v3/api-docs/**",
             "/swagger-resources/**",
