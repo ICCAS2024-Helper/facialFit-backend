@@ -26,10 +26,20 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew clean build
+
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
+        with:
+          buildkitd-flags: --debug
 
       - name: Login to Docker Hub
         uses: docker/login-action@v1
@@ -42,7 +52,9 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/facialfit-backend:latest
+          tags: gcr.io/smile-helper/smilehelper-app:latest
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
 
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v1
@@ -76,3 +88,7 @@ jobs:
       - name: Deploy to GKE
         run: |
           kubectl apply -f deployment.yml
+
+      - name: Restart GKE deployment
+        run: |
+          kubectl rollout restart deployment smilehelper-app
