@@ -6,6 +6,7 @@ import org.springframework.boot.actuate.health.HealthEndpoint;
 import org.springframework.boot.actuate.info.InfoEndpoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -42,6 +43,11 @@ public class SecurityConfig {
             "/error" // /error 경로 추가
     );
 
+    private static final List<String> GET_PUBLIC_URLS = Arrays.asList(
+            "/api/quests/**",
+            "/api/items/**"
+    );
+
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
@@ -57,6 +63,7 @@ public class SecurityConfig {
                         .requestMatchers(SWAGGER_URLS.toArray(new String[0])).permitAll()
                         .requestMatchers(PUBLIC_URLS.toArray(new String[0])).permitAll()
                         .requestMatchers(EndpointRequest.to(HealthEndpoint.class, InfoEndpoint.class)).permitAll() // actuator 엔드포인트 접근 허용
+                        .requestMatchers(HttpMethod.GET, GET_PUBLIC_URLS.toArray(new String[0])).permitAll() // GET 요청에 대해 공개적으로 허용
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
