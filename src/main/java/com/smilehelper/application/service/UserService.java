@@ -1,6 +1,7 @@
 package com.smilehelper.application.service;
 
 import com.smilehelper.application.domain.User;
+import com.smilehelper.application.dto.UserCoinDTO;
 import com.smilehelper.application.dto.UserDTO;
 import com.smilehelper.application.exception.UserException;
 import com.smilehelper.application.repository.UserRepository;
@@ -27,6 +28,19 @@ public class UserService {
     @Autowired
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+    @Transactional
+    public UserCoinDTO getUserCoin(Long userId) {
+        Optional<User> opUser = userRepository.findById(userId);
+        if (opUser.isPresent()) {
+            User user = opUser.get();
+            return UserCoinDTO.builder()
+                    .coin(user.getCoin())
+                    .build();
+        } else {
+            throw new RuntimeException("유저가 존재하지 않습니다.");
+        }
     }
 
     /**
