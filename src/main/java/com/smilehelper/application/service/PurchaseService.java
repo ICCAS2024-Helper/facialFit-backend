@@ -64,16 +64,16 @@ public class PurchaseService {
     /**
      * 아이템 구매 처리
      *
-     * @param userId 사용자 ID
+     * @param id 사용자 ID
      * @param itemId 아이템 ID
      * @return 생성된 PurchaseDTO
      * @throws RuntimeException 사용자나 아이템을 찾을 수 없거나, 코인 부족 등의 문제가 발생할 경우 예외 발생
      */
     @Transactional
-    public PurchaseDTO purchaseItem(Long userId, Long itemId) {
+    public PurchaseDTO purchaseItem(String id, Long itemId) {
         // 사용자 조회
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다. ID: " + userId));
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다. ID: " + id));
 
         // 아이템 조회
         Item item = itemRepository.findById(itemId)
@@ -130,7 +130,7 @@ public class PurchaseService {
     private PurchaseDTO convertToDTO(Purchase purchase) {
         PurchaseDTO purchaseDTO = new PurchaseDTO();
         purchaseDTO.setId(purchase.getPurchaseId());
-        purchaseDTO.setUserId(purchase.getUser().getUserId());
+        purchaseDTO.setUser_id(purchase.getUser().getId());
         purchaseDTO.setItemId(purchase.getItem().getItemId());
         purchaseDTO.setPurchasePrice(purchase.getPurchasePrice());
         purchaseDTO.setPurchaseDate(purchase.getPurchaseDate());

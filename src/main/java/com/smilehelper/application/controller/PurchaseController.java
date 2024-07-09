@@ -57,7 +57,7 @@ public class PurchaseController {
     /**
      * 아이템 구매
      *
-     * @param userId 사용자 ID
+     * @param id 사용자 ID
      * @param itemId 아이템 ID
      * @return 생성된 PurchaseDTO
      * @throws RuntimeException 사용자나 아이템을 찾을 수 없거나, 코인 부족 등의 문제가 발생할 경우 예외 발생
@@ -69,10 +69,10 @@ public class PurchaseController {
     })
     @PostMapping("/purchase")
     public ResponseEntity<PurchaseDTO> purchaseItem(
-            @RequestParam Long userId,
+            @RequestParam String id,
             @RequestParam Long itemId
     ) {
-        PurchaseDTO purchaseDTO = purchaseService.purchaseItem(userId, itemId);
+        PurchaseDTO purchaseDTO = purchaseService.purchaseItem(id, itemId);
         return ResponseEntity.ok(purchaseDTO);
     }
     /**
