@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -81,13 +80,13 @@ public class PurchaseService {
                 .orElseThrow(() -> new RuntimeException("아이템을 찾을 수 없습니다. ID: " + itemId));
 
         // 아이템 가격 조회
-        BigDecimal purchasePrice = item.getItemPrice();
+        int purchasePrice = item.getItemPrice();
 
         // 사용자의 코인 잔액 확인 및 차감
-        if (user.getCoin() < purchasePrice.longValue()) {
+        if (user.getCoin() < purchasePrice) {
             throw new RuntimeException("코인 잔액이 부족합니다.");
         }
-        user.setCoin(user.getCoin() - purchasePrice.longValue());
+        user.setCoin(user.getCoin() - purchasePrice);
         userRepository.save(user);
 
         // 아이템 수량 감소 및 품절 상태 업데이트

@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 /**
  * ItemService 클래스는 아이템 관련 비즈니스 로직을 처리하는 서비스 클래스입니다.
  */
@@ -22,8 +23,6 @@ public class ItemService {
     public ItemService(ItemRepository itemRepository) {
         this.itemRepository = itemRepository;
     }
-
-
 
     /**
      * 모든 아이템 조회
@@ -57,6 +56,9 @@ public class ItemService {
     public ItemDTO createItem(ItemDTO itemDTO) {
         Item newItem = new Item();
         BeanUtils.copyProperties(itemDTO, newItem);
+        if (newItem.getQuantity() == 0) {
+            newItem.setSoldOut(true);
+        }
         newItem = itemRepository.save(newItem);
         return convertToDTO(newItem);
     }
@@ -71,12 +73,15 @@ public class ItemService {
     @Transactional
     public ItemDTO updateItem(Long itemId, ItemDTO updatedItemDTO) {
         Item itemToUpdate = itemRepository.findById(itemId)
-                .orElseThrow(() -> new RuntimeException("아이템을 찾을 수 없습니다. ID: \" + itemId"));
+                .orElseThrow(() -> new RuntimeException("아이템을 찾을 수 없습니다. ID: " + itemId));
         itemToUpdate.setItemName(updatedItemDTO.getItemName());
         itemToUpdate.setItemPrice(updatedItemDTO.getItemPrice());
-        itemToUpdate.setSoldOut(updatedItemDTO.isSoldOut());
         itemToUpdate.setQuantity(updatedItemDTO.getQuantity());
-
+        if (itemToUpdate.getQuantity() == 0) {
+            itemToUpdate.setSoldOut(true);
+        } else {
+            itemToUpdate.setSoldOut(false);
+        }
         Item updatedItem = itemRepository.save(itemToUpdate);
         return convertToDTO(updatedItem);
     }
@@ -92,6 +97,7 @@ public class ItemService {
                 .orElseThrow(() -> new RuntimeException("아이템을 찾을 수 없습니다 ID: " + itemId));
         itemRepository.delete(item);
     }
+
     /**
      * Item 엔티티를 Item DTO 변환
      * @param item 변환활 Item 엔티티
@@ -102,5 +108,4 @@ public class ItemService {
         BeanUtils.copyProperties(item, itemDTO);
         return itemDTO;
     }
-
 }

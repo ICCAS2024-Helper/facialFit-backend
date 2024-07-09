@@ -4,9 +4,6 @@ package com.smilehelper.application.domain;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
-
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 
@@ -30,7 +27,7 @@ public class Purchase {
     private Item item;   // 구매한 아이템
 
     @Column(nullable = false)
-    private BigDecimal purchasePrice;   // 구매한 아이템의 가격
+    private int purchasePrice;   // 구매한 아이템의 가격
 
     @Column(nullable = false)
     private LocalDateTime purchaseDate;   // 구매 일시
