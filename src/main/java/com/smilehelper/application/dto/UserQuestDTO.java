@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @Builder
 public class UserQuestDTO {
     private Long userQuestId;
-    private Long userId;
+    private String id;
     private Long questId;
     private LocalDateTime completedAt;
 }

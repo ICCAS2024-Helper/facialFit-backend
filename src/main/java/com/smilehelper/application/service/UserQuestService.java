@@ -33,8 +33,8 @@ public class UserQuestService {
     }
 
     @Transactional
-    public void completeQuest(Long userId, Long questId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+    public void completeQuest(String id, Long questId) {
+        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
         Quest quest = questRepository.findById(questId).orElseThrow(() -> new RuntimeException("Quest not found"));
 
         UserQuest userQuest = UserQuest.builder()
@@ -46,8 +46,8 @@ public class UserQuestService {
         userQuestRepository.save(userQuest);
     }
 
-    public List<QuestDTO> getIncompleteQuests(Long userId) {
-        List<Long> completedQuestIds = userQuestRepository.findByUserId(userId).stream()
+    public List<QuestDTO> getIncompleteQuests(String id) {
+        List<Long> completedQuestIds = userQuestRepository.findByUserId(id).stream()
                 .map(userQuest -> userQuest.getQuest().getQuestId())
                 .collect(Collectors.toList());
 
@@ -62,8 +62,8 @@ public class UserQuestService {
                 .collect(Collectors.toList());
     }
 
-    public List<QuestDTO> getUserCompletedQuests(Long userId) {
-        return userQuestRepository.findByUserId(userId).stream()
+    public List<QuestDTO> getUserCompletedQuests(String id) {
+        return userQuestRepository.findByUserId(id).stream()
                 .map(userQuest -> {
                     Quest quest = userQuest.getQuest();
                     return QuestDTO.builder()
