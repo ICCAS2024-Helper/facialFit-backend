@@ -97,6 +97,25 @@ public class UserController {
         }
     }
 
+    @Operation(summary = "코인 수 증가", description = "유저 ID와 증가시킬 코인 수를 입력받아 코인 수를 증가시킵니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "코인 증가 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "401", description = "인증 실패"),
+            @ApiResponse(responseCode = "404", description = "유저를 찾을 수 없음")
+    })
+    @PostMapping("/increase-coin")
+    public ResponseEntity<UserCoinDTO> increaseCoin(@RequestParam String userId, @RequestParam long coin) {
+        try {
+            UserCoinDTO updatedUserCoin = userService.increaseCoin(userId, coin);
+            return ResponseEntity.ok(updatedUserCoin);
+        } catch (com.smilehelper.application.exception.UserException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
+
     /**
      * 사용자 삭제 (논리적 삭제)
      * @param UserId 삭제할 사용자 ID

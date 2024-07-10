@@ -90,6 +90,19 @@ public class UserService {
         }
     }
 
+    @Transactional
+    public UserCoinDTO increaseCoin(String userId, long coin) throws Exception {
+        Optional<User> opUser = userRepository.findById(userId);
+        if (opUser.isPresent()) {
+            User user = opUser.get();
+            user.setCoin(user.getCoin() + coin); // 코인 수 증가
+            userRepository.save(user); // 변경사항 저장
+            return UserCoinDTO.builder().coin(user.getCoin()).build();
+        } else {
+            throw new UserException("유저가 존재하지 않습니다.");
+        }
+    }
+
     /**
      * 사용자 정보 읽기
      * @param userId 사용자 ID
