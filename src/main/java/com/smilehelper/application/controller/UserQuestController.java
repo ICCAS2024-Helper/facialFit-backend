@@ -17,7 +17,7 @@ import java.util.List;
  */
 @Tag(name = "UserQuest API", description = "UserQuest API 목록입니다.")
 @RestController
-@RequestMapping("/api/users/{userId}/quests")
+@RequestMapping("/api/users/{id}/quests")
 public class UserQuestController {
 
     private final UserQuestService userQuestService;
@@ -32,8 +32,8 @@ public class UserQuestController {
             @ApiResponse(responseCode = "200", description = "조회 성공")
     })
     @GetMapping("/completed")
-    public ResponseEntity<List<QuestDTO>> getCompletedQuests(@PathVariable Long userId) {
-        List<QuestDTO> completedQuests = userQuestService.getUserCompletedQuests(userId);
+    public ResponseEntity<List<QuestDTO>> getCompletedQuests(@PathVariable String id) {
+        List<QuestDTO> completedQuests = userQuestService.getUserCompletedQuests(id);
         return ResponseEntity.ok(completedQuests);
     }
 
@@ -42,8 +42,8 @@ public class UserQuestController {
             @ApiResponse(responseCode = "200", description = "조회 성공")
     })
     @GetMapping("/incomplete")
-    public ResponseEntity<List<QuestDTO>> getIncompleteQuests(@PathVariable Long userId) {
-        List<QuestDTO> incompleteQuests = userQuestService.getIncompleteQuests(userId);
+    public ResponseEntity<List<QuestDTO>> getIncompleteQuests(@PathVariable String id) {
+        List<QuestDTO> incompleteQuests = userQuestService.getIncompleteQuests(id);
         return ResponseEntity.ok(incompleteQuests);
     }
 
@@ -52,8 +52,8 @@ public class UserQuestController {
             @ApiResponse(responseCode = "200", description = "완료 성공")
     })
     @PostMapping("/complete/{questId}")
-    public ResponseEntity<Void> completeQuest(@PathVariable Long userId, @PathVariable Long questId) {
-        userQuestService.completeQuest(userId, questId);
+    public ResponseEntity<Void> completeQuest(@PathVariable String id, @PathVariable Long questId) {
+        userQuestService.completeQuest(id, questId);
         return ResponseEntity.ok().build();
     }
 }

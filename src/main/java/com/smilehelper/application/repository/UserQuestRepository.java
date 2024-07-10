@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface UserQuestRepository extends JpaRepository<UserQuest, Long> {
-    @Query("SELECT uq FROM UserQuest uq WHERE uq.user.userId = :userId")
-    List<UserQuest> findByUserId(@Param("userId") Long userId);
+public interface UserQuestRepository extends JpaRepository<UserQuest, String> {
+    @Query("SELECT uq FROM UserQuest uq WHERE uq.user.id = :id")
+    List<UserQuest> findByUserId(@Param("id") String id);
 }
