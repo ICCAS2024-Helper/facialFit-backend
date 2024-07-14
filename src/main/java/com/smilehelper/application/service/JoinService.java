@@ -61,6 +61,7 @@ public class JoinService {
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .isDeleted(false)
+                .firstLogin(true)
                 .build();
         userRepository.save(user);
     }

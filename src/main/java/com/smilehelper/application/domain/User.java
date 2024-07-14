@@ -84,6 +84,9 @@ public class User implements UserDetails {
     private int age; // 나이
 
     @Column(nullable = false)
+    private boolean firstLogin; // 첫 로그인 여부
+
+    @Column(nullable = false)
     private LocalDateTime createdAt; // 가입일
 
     @Column(nullable = false)

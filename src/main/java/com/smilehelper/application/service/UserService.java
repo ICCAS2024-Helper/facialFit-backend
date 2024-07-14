@@ -1,6 +1,7 @@
 package com.smilehelper.application.service;
 
 import com.smilehelper.application.domain.User;
+import com.smilehelper.application.dto.FirstLoginDTO;
 import com.smilehelper.application.dto.UserCoinDTO;
 import com.smilehelper.application.dto.UserDTO;
 import com.smilehelper.application.exception.UserException;
@@ -100,6 +101,21 @@ public class UserService {
             return UserCoinDTO.builder().coin(user.getCoin()).build();
         } else {
             throw new UserException("유저가 존재하지 않습니다.");
+        }
+    }
+
+    /**
+     * 첫번째 로그인 여부 업데이트
+     * @param id 사용자 ID
+     */
+    public void updateFirstLogin(String id, FirstLoginDTO firstLoginDTO) {
+        Optional<User> userOptional = userRepository.findById(id);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            user.setFirstLogin(firstLoginDTO.isFirstLogin());
+            userRepository.save(user);
+        } else {
+            throw new UserException(id);
         }
     }
 
