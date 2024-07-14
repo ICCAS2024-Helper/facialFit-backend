@@ -62,6 +62,24 @@ public class User implements UserDetails {
     @Enumerated(value = EnumType.STRING)
     private SeverityLevel severityLevel; // 중경도
 
+    @Column(nullable = true)
+    private Boolean surveyQuestion1;
+
+    @Column(nullable = true)
+    private Boolean surveyQuestion2;
+
+    @Column(nullable = true)
+    private Boolean surveyQuestion3;
+
+    @Column(nullable = true)
+    private Boolean surveyQuestion4;
+
+    @Column(nullable = true)
+    private Boolean surveyQuestion5;
+
+    @Column(nullable = true)
+    private Boolean surveyQuestion6;
+
     @Column(nullable = false)
     private int age; // 나이
 
