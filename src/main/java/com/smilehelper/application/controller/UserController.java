@@ -1,6 +1,7 @@
 package com.smilehelper.application.controller;
 
 import com.smilehelper.application.domain.User;
+import com.smilehelper.application.dto.FirstLoginDTO;
 import com.smilehelper.application.dto.UserCoinDTO;
 import com.smilehelper.application.dto.UserDTO;
 import com.smilehelper.application.service.UserService;
@@ -35,7 +36,6 @@ public class UserController {
     public UserController(UserService userService) {
         this.userService = userService;
     }
-
 
     /**
      * 현재 사용자 정보 조회
@@ -114,6 +114,20 @@ public class UserController {
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
+    }
+
+    /**
+     * 사용자 첫 로그인 여부 업데이트
+     */
+    @Operation(summary = "첫 로그인 여부 업데이트", description = "사용자의 첫 로그인 여부를 업데이트합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "업데이트 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "401", description = "인증 실패")
+    })
+    @PostMapping("/first-login")
+    public void updateFirstLogin(@RequestParam String id, @RequestBody FirstLoginDTO firstLoginDTO) {
+        userService.updateFirstLogin(id, firstLoginDTO);
     }
 
     /**
