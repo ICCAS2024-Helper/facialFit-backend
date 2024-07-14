@@ -1,8 +1,12 @@
 package com.smilehelper.application.service;
 
 import com.smilehelper.application.domain.Item;
+import com.smilehelper.application.domain.Purchase;
+import com.smilehelper.application.domain.User;
 import com.smilehelper.application.dto.ItemDTO;
 import com.smilehelper.application.repository.ItemRepository;
+import com.smilehelper.application.repository.PurchaseRepository;
+import com.smilehelper.application.repository.UserRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,10 +22,18 @@ import java.util.stream.Collectors;
 public class ItemService {
 
     private final ItemRepository itemRepository;
+    private final UserRepository userRepository;
+    private final PurchaseRepository purchaseRepository;
 
     @Autowired
-    public ItemService(ItemRepository itemRepository) {
+    public ItemService(
+            ItemRepository itemRepository,
+            UserRepository userRepository,
+            PurchaseRepository purchaseRepository
+    ) {
         this.itemRepository = itemRepository;
+        this.userRepository = userRepository;
+        this.purchaseRepository = purchaseRepository;
     }
 
     /**
@@ -61,6 +73,23 @@ public class ItemService {
         }
         newItem = itemRepository.save(newItem);
         return convertToDTO(newItem);
+    }
+
+    // 사용자별 아이템 수량을 가져오는 메서드 추가
+    public List<ItemDTO> getItemsForUser(String id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다. ID: " + id));
+
+        List<Item> items = itemRepository.findAll();
+        List<Purchase> userPurchases = purchaseRepository.findByUser(user);
+
+        return items.stream().map(item -> {
+            int purchasedQuantity = (int) userPurchases.stream()
+                    .filter(purchase -> purchase.getItem().getItemId().equals(item.getItemId()))
+                    .count();
+            int remainingQuantity = item.getQuantity() - purchasedQuantity;
+            return new ItemDTO(item.getItemCode(), item.getItemName(), item.getItemPrice(), remainingQuantity);
+        }).collect(Collectors.toList());
     }
 
     /**
