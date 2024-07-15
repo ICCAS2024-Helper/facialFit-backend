@@ -75,7 +75,7 @@ public class ItemService {
         return convertToDTO(newItem);
     }
 
-    // 사용자별 아이템 수량을 가져오는 메서드 추가
+    // 사용자별 아이템 수량을 가져오는 메서드 수정
     public List<ItemDTO> getItemsForUser(String id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다. ID: " + id));
@@ -84,10 +84,10 @@ public class ItemService {
         List<Purchase> userPurchases = purchaseRepository.findByUser(user);
 
         return items.stream().map(item -> {
-            int purchasedQuantity = (int) userPurchases.stream()
+            long purchasedQuantity = userPurchases.stream()
                     .filter(purchase -> purchase.getItem().getItemId().equals(item.getItemId()))
-                    .count();
-            int remainingQuantity = item.getQuantity() - purchasedQuantity;
+                    .count(); // 구매한 아이템 수량을 세기
+            int remainingQuantity = item.getQuantity() - (int) purchasedQuantity;
             return new ItemDTO(item.getItemCode(), item.getItemName(), item.getItemPrice(), remainingQuantity);
         }).collect(Collectors.toList());
     }
