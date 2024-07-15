@@ -60,6 +60,12 @@ public class JoinService {
                 .age(joinDTO.getAge())
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
+                .surveyQuestion1(joinDTO.getSurveyQuestion1())
+                .surveyQuestion2(joinDTO.getSurveyQuestion2())
+                .surveyQuestion3(joinDTO.getSurveyQuestion3())
+                .surveyQuestion4(joinDTO.getSurveyQuestion4())
+                .surveyQuestion5(joinDTO.getSurveyQuestion5())
+                .surveyQuestion6(joinDTO.getSurveyQuestion6())
                 .isDeleted(false)
                 .firstLogin(true)
                 .build();
