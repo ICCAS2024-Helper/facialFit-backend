@@ -22,4 +22,10 @@ public class JoinDTO {
     private int age;            // 나이
     private HealthArea healthArea;  // 아픈 부위
     private SeverityLevel severityLevel; // 중경도
+    private Boolean surveyQuestion1; // 설문조사1
+    private Boolean surveyQuestion2; // 설문조사2
+    private Boolean surveyQuestion3; // 설문조사3
+    private Boolean surveyQuestion4; // 설문조사4
+    private Boolean surveyQuestion5; // 설문조사5
+    private Boolean surveyQuestion6; // 설문조사6
 }

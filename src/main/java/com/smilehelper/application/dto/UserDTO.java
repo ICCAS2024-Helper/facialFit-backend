@@ -28,9 +28,6 @@ public class UserDTO {
     private HealthArea healthArea;
     private SeverityLevel severityLevel;
     private int age;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-    private boolean isDeleted;
 
     public static UserDTO build(User user) {
         return UserDTO.builder()
@@ -42,9 +39,6 @@ public class UserDTO {
                 .healthArea(user.getHealthArea())
                 .severityLevel(user.getSeverityLevel())
                 .age(user.getAge())
-                .createdAt(user.getCreatedAt())
-                .updatedAt(user.getUpdatedAt())
-                .isDeleted(user.isDeleted())
                 .build();
     }
 }
