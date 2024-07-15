@@ -64,7 +64,7 @@ public class PurchaseService {
     /**
      * 아이템 구매 처리
      *
-     * @param id 사용자 ID
+     * @param id 로그인 ID
      * @param itemId 아이템 ID
      * @return 생성된 PurchaseDTO
      * @throws RuntimeException 사용자나 아이템을 찾을 수 없거나, 코인 부족 등의 문제가 발생할 경우 예외 발생
@@ -89,12 +89,6 @@ public class PurchaseService {
         user.setCoin(user.getCoin() - purchasePrice);
         userRepository.save(user);
 
-        // 아이템 수량 감소 및 품절 상태 업데이트
-        item.setQuantity(item.getQuantity() - 1);
-        if (item.getQuantity() == 0) {
-            item.setSoldOut(true);
-        }
-        itemRepository.save(item);
 
         // 구매 내역 생성 및 저장
         Purchase purchase = new Purchase();
@@ -137,4 +131,3 @@ public class PurchaseService {
         return purchaseDTO;
     }
 }
-
