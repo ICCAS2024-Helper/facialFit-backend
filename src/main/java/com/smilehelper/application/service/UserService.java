@@ -2,6 +2,7 @@ package com.smilehelper.application.service;
 
 import com.smilehelper.application.domain.User;
 import com.smilehelper.application.dto.FirstLoginDTO;
+import com.smilehelper.application.dto.FirstPhotoDTO;
 import com.smilehelper.application.dto.UserCoinDTO;
 import com.smilehelper.application.dto.UserDTO;
 import com.smilehelper.application.exception.UserException;
@@ -113,6 +114,21 @@ public class UserService {
         if (userOptional.isPresent()) {
             User user = userOptional.get();
             user.setFirstLogin(firstLoginDTO.isFirstLogin());
+            userRepository.save(user);
+        } else {
+            throw new UserException(id);
+        }
+    }
+
+    /**
+     * 첫번째 사진 업로드 여부 업데이트
+     * @param id 사용자 ID
+     */
+    public void updateFirstPhoto(String id, FirstPhotoDTO firstPhotoDTO) {
+        Optional<User> userOptional = userRepository.findById(id);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            user.setFirstPhoto(firstPhotoDTO.isFirstPhoto());
             userRepository.save(user);
         } else {
             throw new UserException(id);

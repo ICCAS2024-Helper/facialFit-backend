@@ -68,6 +68,7 @@ public class JoinService {
                 .surveyQuestion6(joinDTO.getSurveyQuestion6())
                 .isDeleted(false)
                 .firstLogin(true)
+                .firstPhoto(true)
                 .build();
         userRepository.save(user);
     }

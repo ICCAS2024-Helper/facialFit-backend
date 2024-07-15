@@ -2,6 +2,7 @@ package com.smilehelper.application.controller;
 
 import com.smilehelper.application.domain.User;
 import com.smilehelper.application.dto.FirstLoginDTO;
+import com.smilehelper.application.dto.FirstPhotoDTO;
 import com.smilehelper.application.dto.UserCoinDTO;
 import com.smilehelper.application.dto.UserDTO;
 import com.smilehelper.application.service.UserService;
@@ -128,6 +129,20 @@ public class UserController {
     @PostMapping("/first-login")
     public void updateFirstLogin(@RequestParam String id, @RequestBody FirstLoginDTO firstLoginDTO) {
         userService.updateFirstLogin(id, firstLoginDTO);
+    }
+
+    /**
+     * 사용자 첫 사진 업로드 여부 업데이트
+     */
+    @Operation(summary = "첫 사진 업로드 여부 업데이트", description = "사용자의 첫 사진 업로드 여부를 업데이트합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "업데이트 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "401", description = "인증 실패")
+    })
+    @PostMapping("/first-photo")
+    public void updateFirstPhoto(@RequestParam String id, @RequestBody FirstPhotoDTO firstPhotoDTO) {
+        userService.updateFirstPhoto(id, firstPhotoDTO);
     }
 
     /**

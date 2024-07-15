@@ -87,6 +87,9 @@ public class User implements UserDetails {
     private boolean firstLogin; // 첫 로그인 여부
 
     @Column(nullable = false)
+    private boolean firstPhoto; // 첫 사진 찍기 여부
+
+    @Column(nullable = false)
     private LocalDateTime createdAt; // 가입일
 
     @Column(nullable = false)
