@@ -19,7 +19,7 @@ import java.util.List;
  */
 @Tag(name = "UserStageProgress API", description = "UserStageProgress API 목록입니다.")
 @RestController
-@RequestMapping("/api/users/{userId}/stages")
+@RequestMapping("/api/users/{id}/stages")
 public class UserStageProgressController {
 
     private final UserStageProgressService userStageProgressService;
@@ -34,8 +34,8 @@ public class UserStageProgressController {
             @ApiResponse(responseCode = "200", description = "조회 성공")
     })
     @GetMapping("/progress")
-    public ResponseEntity<List<UserStageProgressDTO>> getUserStageProgress(@PathVariable Long userId) {
-        List<UserStageProgressDTO> progress = userStageProgressService.getUserStageProgress(userId);
+    public ResponseEntity<List<UserStageProgressDTO>> getUserStageProgress(@PathVariable String id) {
+        List<UserStageProgressDTO> progress = userStageProgressService.getUserStageProgress(id);
         return ResponseEntity.ok(progress);
     }
 
@@ -46,9 +46,9 @@ public class UserStageProgressController {
             @ApiResponse(responseCode = "404", description = "스테이지를 찾을 수 없음")
     })
     @PostMapping("/complete/{stageId}")
-    public ResponseEntity<Void> completeStage(@PathVariable Long userId, @PathVariable Long stageId) {
+    public ResponseEntity<Void> completeStage(@PathVariable String id, @PathVariable Long stageId) {
         try {
-            userStageProgressService.clearStage(userId, stageId);
+            userStageProgressService.clearStage(id, stageId);
             return ResponseEntity.ok().build();
         } catch (StageException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

@@ -33,11 +33,11 @@ public class UserStageProgressService {
     }
 
     @Transactional
-    public void clearStage(Long userId, Long stageId) throws StageException {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));
+    public void clearStage(String id, Long stageId) throws StageException {
+        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));
         Stage stage = stageRepository.findById(stageId).orElseThrow(() -> new StageException("스테이지를 찾을 수 없습니다."));
 
-        UserStageProgress userStageProgress = userStageProgressRepository.findByUserIdAndStageId(userId, stageId)
+        UserStageProgress userStageProgress = userStageProgressRepository.findByUserIdAndStageId(id, stageId)
                 .orElse(UserStageProgress.builder()
                         .user(user)
                         .stage(stage)
@@ -49,10 +49,10 @@ public class UserStageProgressService {
         userStageProgressRepository.save(userStageProgress);
     }
 
-    public List<UserStageProgressDTO> getUserStageProgress(Long userId) {
-        return userStageProgressRepository.findByUserId(userId).stream()
+    public List<UserStageProgressDTO> getUserStageProgress(String id) {
+        return userStageProgressRepository.findByUserId(id).stream()
                 .map(userStageProgress -> UserStageProgressDTO.builder()
-                        .userId(userStageProgress.getUser().getUserId())
+                        .id(userStageProgress.getUser().getId())
                         .stageId(userStageProgress.getStage().getStageId())
                         .isCleared(userStageProgress.isCleared())
                         .build())
