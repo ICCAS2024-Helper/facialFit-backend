@@ -11,9 +11,9 @@ import java.util.Optional;
 
 @Repository
 public interface UserStageProgressRepository extends JpaRepository<UserStageProgress, Long> {
-    @Query("SELECT usp FROM UserStageProgress usp WHERE usp.user.userId = :userId")
-    List<UserStageProgress> findByUserId(@Param("userId") Long userId);
+    @Query("SELECT usp FROM UserStageProgress usp WHERE usp.user.id = :id")
+    List<UserStageProgress> findByUserId(@Param("id") String id);
 
-    @Query("SELECT usp FROM UserStageProgress usp WHERE usp.user.userId = :userId AND usp.stage.stageId = :stageId")
-    Optional<UserStageProgress> findByUserIdAndStageId(@Param("userId") Long userId, @Param("stageId") Long stageId);
+    @Query("SELECT usp FROM UserStageProgress usp WHERE usp.user.id = :id AND usp.stage.stageId = :stageId")
+    Optional<UserStageProgress> findByUserIdAndStageId(@Param("id") String id, @Param("stageId") Long StageId);
 }

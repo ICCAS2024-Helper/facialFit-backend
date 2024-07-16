@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class UserStageProgressDTO {
-    private Long userId; // 사용자 식별자
+    private String id; // 사용자 아이디
     private Long stageId; // 스테이지 식별자
     private boolean isCleared; // 스테이지 클리어 여부
 }
