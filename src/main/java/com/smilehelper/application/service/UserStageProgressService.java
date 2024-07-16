@@ -10,7 +10,6 @@ import com.smilehelper.application.repository.StageRepository;
 import com.smilehelper.application.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,6 +35,17 @@ public class UserStageProgressService {
     public void clearStage(String id, Long stageId) throws StageException {
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));
         Stage stage = stageRepository.findById(stageId).orElseThrow(() -> new StageException("스테이지를 찾을 수 없습니다."));
+
+        // 이전 스테이지를 클리어했는지 확인
+        if (stage.getStageNumber() > 1) {
+            Long previousStageId = stageRepository.findByStageNumber(stage.getStageNumber() - 1)
+                    .orElseThrow(() -> new StageException("이전 스테이지를 찾을 수 없습니다.")).getStageId();
+            UserStageProgress previousStageProgress = userStageProgressRepository.findByUserIdAndStageId(id, previousStageId)
+                    .orElseThrow(() -> new StageException("이전 스테이지를 클리어하지 않았습니다."));
+            if (!previousStageProgress.isCleared()) {
+                throw new StageException("이전 스테이지를 클리어하지 않았습니다.");
+            }
+        }
 
         UserStageProgress userStageProgress = userStageProgressRepository.findByUserIdAndStageId(id, stageId)
                 .orElse(UserStageProgress.builder()
