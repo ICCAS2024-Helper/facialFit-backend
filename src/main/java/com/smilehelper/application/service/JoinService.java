@@ -46,9 +46,9 @@ public class JoinService {
         if (userRepository.existsById(joinDTO.getId()) || joinDTO.getId().equals("익명의 사용자")) {
             throw new UserException("유저의 아이디가 중복되었습니다.");
         }
-        if (!Pattern.matches(PASSWORD_RULE, joinDTO.getPassword())) {
-            throw new UserException("비밀번호 규칙이 일치하지 않습니다.");
-        }
+//        if (!Pattern.matches(PASSWORD_RULE, joinDTO.getPassword())) {
+//            throw new UserException("비밀번호 규칙이 일치하지 않습니다.");
+//        }
         User user = User.builder()
                 .id(joinDTO.getId())
                 .nickname(joinDTO.getNickname())

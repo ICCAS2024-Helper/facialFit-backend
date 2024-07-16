@@ -33,18 +33,18 @@ public class User implements UserDetails {
 
     @Column(unique = true, nullable = false)
     @NotEmpty
-    @Size(min = 4, max = 20)
+    @Size(min = 1, max = 20)
     @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "아이디는 영문 대소문자와 숫자만 사용할 수 있습니다.")
     private String id; // 로그인에 사용되는 아이디
 
     @Column(nullable = false)
     @NotEmpty
-    @Size(min = 4, max = 20)
+    @Size(min = 1, max = 20)
     private String nickname; // 사용자의 닉네임
 
     @Column(nullable = false)
     @NotEmpty
-    @Size(min = 4, max = 20)
+    @Size(min = 1, max = 20)
     private String password; // 비밀번호 (암호화되어 저장)
 
     @Column(nullable = false)
