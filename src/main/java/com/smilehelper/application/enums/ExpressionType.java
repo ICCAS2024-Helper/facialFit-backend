@@ -8,7 +8,7 @@ public enum ExpressionType {
     OPEN_MOUTH("입 벌리기"),
     SURPRISE("놀람"),
     SMILE("웃음"),
-    TEMP1("임시1"),
+    FROWN("찡그림"),
     TEMP2("임시2"),
     TEMP3("임시3");
 
